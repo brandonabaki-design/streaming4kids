@@ -1,7 +1,15 @@
 import Card from './Card.jsx'
 
 // A horizontally scrolling row of show cards, like a Netflix shelf.
-export default function Row({ title, items, profile, onPlay, onFavoriteChange }) {
+export default function Row({
+  title,
+  items,
+  favSet,
+  watchedSet,
+  onPlay,
+  onToggleFavorite,
+  onToggleWatched,
+}) {
   return (
     <section className="row">
       <h2 className="row__title">{title}</h2>
@@ -10,9 +18,11 @@ export default function Row({ title, items, profile, onPlay, onFavoriteChange })
           <Card
             key={show.id}
             show={show}
-            profile={profile}
+            fav={favSet.has(show.id)}
+            watched={watchedSet.has(show.id)}
             onPlay={onPlay}
-            onFavoriteChange={onFavoriteChange}
+            onToggleFavorite={onToggleFavorite}
+            onToggleWatched={onToggleWatched}
           />
         ))}
       </div>

@@ -1,14 +1,24 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { shows, categoryOrder } from '../data/content.js'
-import { getFavorites, getContinueWatching } from '../storage.js'
+import {
+  getFavorites,
+  getRecents,
+  getWatched,
+  toggleFavorite,
+  toggleWatched,
+} from '../storage.js'
 import Row from './Row.jsx'
 
 // Builds the rows of shows for the selected kid and lays out the browse screen.
-export default function Browse({ profile, onPlay, onSwitchProfile }) {
-  // Bumping this forces favorites/continue-watching rows to recompute after
-  // the child taps a heart or opens a video.
+export default function Browse({ profile, refreshKey, onPlay, onSwitchProfile }) {
+  // `version` forces a re-read of localStorage after a heart/watched toggle.
+  // It also bumps when `refreshKey` changes (e.g. returning from a video, which
+  // auto-marks the episode watched).
   const [version, setVersion] = useState(0)
-  const refresh = () => setVersion((v) => v + 1)
+  const bump = () => setVersion((v) => v + 1)
+  useEffect(() => {
+    setVersion((v) => v + 1)
+  }, [refreshKey])
 
   const showsForKid = useMemo(
     () => shows.filter((s) => s.profiles.includes(profile.id)),
@@ -21,6 +31,16 @@ export default function Browse({ profile, onPlay, onSwitchProfile }) {
     return map
   }, [])
 
+  // Re-derived from storage whenever `version` changes; passed down to cards.
+  const favSet = useMemo(
+    () => new Set(getFavorites(profile.id)),
+    [profile.id, version],
+  )
+  const watchedSet = useMemo(
+    () => new Set(getWatched(profile.id)),
+    [profile.id, version],
+  )
+
   const rows = useMemo(() => {
     const result = []
     for (const category of categoryOrder) {
@@ -30,7 +50,7 @@ export default function Browse({ profile, onPlay, onSwitchProfile }) {
           .map((id) => byId[id])
           .filter((s) => s && s.profiles.includes(profile.id))
       } else if (category === 'Continue Watching') {
-        items = getContinueWatching(profile.id)
+        items = getRecents(profile.id)
           .map((id) => byId[id])
           .filter((s) => s && s.profiles.includes(profile.id))
       } else {
@@ -39,9 +59,17 @@ export default function Browse({ profile, onPlay, onSwitchProfile }) {
       if (items.length > 0) result.push({ category, items })
     }
     return result
-    // version is intentionally a dependency: it re-reads localStorage.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile.id, showsForKid, byId, version])
+
+  const handleToggleFavorite = (showId) => {
+    toggleFavorite(profile.id, showId)
+    bump()
+  }
+  const handleToggleWatched = (showId) => {
+    toggleWatched(profile.id, showId)
+    bump()
+  }
 
   const featured = showsForKid[0]
 
@@ -88,9 +116,11 @@ export default function Browse({ profile, onPlay, onSwitchProfile }) {
             key={row.category}
             title={row.category}
             items={row.items}
-            profile={profile}
+            favSet={favSet}
+            watchedSet={watchedSet}
             onPlay={onPlay}
-            onFavoriteChange={refresh}
+            onToggleFavorite={handleToggleFavorite}
+            onToggleWatched={handleToggleWatched}
           />
         ))}
       </main>

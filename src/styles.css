@@ -290,6 +290,51 @@ button {
   color: var(--accent);
 }
 
+/* Watched check, top-left. Faint outline when unwatched (tap to mark),
+   solid green when watched (tap to clear). */
+.card__check {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.45);
+}
+
+.card__check.is-on {
+  color: #fff;
+  background: #2ecc71;
+  border-color: #2ecc71;
+}
+
+.card__watched-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: #2ecc71;
+  color: #06351a;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* Dim watched cards a touch so seen episodes are obvious at a glance. */
+.card.is-watched .card__placeholder,
+.card.is-watched .card__img {
+  filter: brightness(0.6);
+}
+
 .card__play-badge {
   position: absolute;
   left: 50%;

@@ -1,5 +1,8 @@
-// Tiny localStorage helpers for per-kid state: favorites and watch progress.
-// Everything is namespaced by profile id so Noah and Naia never mix.
+// Per-kid state saved in the browser (localStorage), namespaced by profile id
+// so Noah and Naia never mix. We track three things per kid:
+//   favorites  - shows they've hearted
+//   recents    - recently opened, for the "Continue Watching" row
+//   watched    - episodes/shows they've already seen (the green check)
 
 const KEY = 'kidflix.v1'
 
@@ -20,9 +23,23 @@ function writeAll(data) {
 }
 
 function profileState(data, profileId) {
-  return data[profileId] || { favorites: [], continueWatching: [] }
+  const s = data[profileId] || {}
+  return {
+    favorites: s.favorites || [],
+    recents: s.recents || [],
+    watched: s.watched || [],
+  }
 }
 
+function update(profileId, mutate) {
+  const data = readAll()
+  const state = profileState(data, profileId)
+  mutate(state)
+  data[profileId] = state
+  writeAll(data)
+}
+
+// --- Favorites -------------------------------------------------------------
 export function getFavorites(profileId) {
   return profileState(readAll(), profileId).favorites
 }
@@ -32,29 +49,47 @@ export function isFavorite(profileId, showId) {
 }
 
 export function toggleFavorite(profileId, showId) {
-  const data = readAll()
-  const state = profileState(data, profileId)
-  const has = state.favorites.includes(showId)
-  state.favorites = has
-    ? state.favorites.filter((id) => id !== showId)
-    : [showId, ...state.favorites]
-  data[profileId] = state
-  writeAll(data)
-  return !has
+  let now = false
+  update(profileId, (s) => {
+    const has = s.favorites.includes(showId)
+    now = !has
+    s.favorites = has
+      ? s.favorites.filter((id) => id !== showId)
+      : [showId, ...s.favorites]
+  })
+  return now
 }
 
-// continueWatching is just an ordered list of recently opened show ids.
-export function getContinueWatching(profileId) {
-  return profileState(readAll(), profileId).continueWatching
+// --- Recently opened ("Continue Watching") --------------------------------
+export function getRecents(profileId) {
+  return profileState(readAll(), profileId).recents
 }
 
-export function markWatched(profileId, showId) {
-  const data = readAll()
-  const state = profileState(data, profileId)
-  state.continueWatching = [
-    showId,
-    ...state.continueWatching.filter((id) => id !== showId),
-  ].slice(0, 10)
-  data[profileId] = state
-  writeAll(data)
+export function recordOpened(profileId, showId) {
+  update(profileId, (s) => {
+    s.recents = [showId, ...s.recents.filter((id) => id !== showId)].slice(0, 10)
+  })
+}
+
+// --- Watched (the green check) ---------------------------------------------
+export function getWatched(profileId) {
+  return profileState(readAll(), profileId).watched
+}
+
+export function isWatched(profileId, showId) {
+  return getWatched(profileId).includes(showId)
+}
+
+export function setWatched(profileId, showId, watched) {
+  update(profileId, (s) => {
+    const has = s.watched.includes(showId)
+    if (watched && !has) s.watched = [showId, ...s.watched]
+    if (!watched && has) s.watched = s.watched.filter((id) => id !== showId)
+  })
+}
+
+export function toggleWatched(profileId, showId) {
+  const now = !isWatched(profileId, showId)
+  setWatched(profileId, showId, now)
+  return now
 }

@@ -4,7 +4,7 @@ import ProfileSelect from './components/ProfileSelect.jsx'
 import Browse from './components/Browse.jsx'
 import Player from './components/Player.jsx'
 import ParentGate from './components/ParentGate.jsx'
-import { markWatched } from './storage.js'
+import { recordOpened, setWatched } from './storage.js'
 
 // Top-level app state machine:
 //   - no profile selected  -> ProfileSelect ("Who's watching?")
@@ -16,6 +16,8 @@ export default function App() {
   const [profileId, setProfileId] = useState(null)
   const [activeShow, setActiveShow] = useState(null)
   const [gate, setGate] = useState(null) // { onPass } or null
+  // Bumped when a video closes so Browse re-reads watched/recents from storage.
+  const [browseVersion, setBrowseVersion] = useState(0)
 
   const profile = profiles.find((p) => p.id === profileId) || null
 
@@ -26,7 +28,13 @@ export default function App() {
 
   const openShow = useCallback(
     (show) => {
-      if (profileId) markWatched(profileId, show.id)
+      if (profileId) {
+        recordOpened(profileId, show.id)
+        // Opening a Drive embed is the only "play" signal we get (the player
+        // is cross-origin, so we can't detect completion) — so mark it watched
+        // on open. A parent can clear the check from the card if needed.
+        setWatched(profileId, show.id, true)
+      }
       setActiveShow(show)
     },
     [profileId],
@@ -51,6 +59,7 @@ export default function App() {
       {profile && (
         <Browse
           profile={profile}
+          refreshKey={browseVersion}
           onPlay={openShow}
           onSwitchProfile={handleSwitchProfile}
         />
@@ -60,7 +69,10 @@ export default function App() {
         <Player
           show={activeShow}
           profile={profile}
-          onClose={() => setActiveShow(null)}
+          onClose={() => {
+            setActiveShow(null)
+            setBrowseVersion((v) => v + 1)
+          }}
         />
       )}
 
