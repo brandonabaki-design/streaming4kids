@@ -18,6 +18,7 @@ import ProfileSelect from './components/ProfileSelect.jsx'
 import Browse from './components/Browse.jsx'
 import SeriesDetail from './components/SeriesDetail.jsx'
 import Player from './components/Player.jsx'
+import YouTubePlayer from './components/YouTubePlayer.jsx'
 import ParentGate from './components/ParentGate.jsx'
 import SettingsSheet from './components/SettingsSheet.jsx'
 
@@ -164,13 +165,16 @@ export default function App() {
         />
       )}
 
-      {activeShow && (
-        <Player
-          show={activeShow}
-          profile={profile}
-          onClose={() => setActiveShow(null)}
-        />
-      )}
+      {activeShow &&
+        (activeShow.youtubeId || activeShow.youtubePlaylistId ? (
+          <YouTubePlayer show={activeShow} onClose={() => setActiveShow(null)} />
+        ) : (
+          <Player
+            show={activeShow}
+            profile={profile}
+            onClose={() => setActiveShow(null)}
+          />
+        ))}
 
       {settingsOpen && profile && (
         <SettingsSheet

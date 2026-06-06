@@ -2,11 +2,13 @@
 // (things that can be opened in the player); series are containers you browse
 // into. This module gives the UI clean lists and lookups.
 
-import { series, movies } from './data/content.js'
+import { series, movies, ytShows } from './data/content.js'
 
-// Every playable item (movies + every episode), each tagged with context.
+// Every playable item (movies + YouTube shows + every episode), each tagged
+// with context.
 export const allPlayables = [
   ...movies.map((m) => ({ ...m, kind: 'movie' })),
+  ...ytShows.map((y) => ({ ...y, kind: 'yt' })),
   ...series.flatMap((s) =>
     s.seasons.flatMap((season) =>
       season.episodes.map((ep) => ({
@@ -35,6 +37,10 @@ export function seriesForProfile(profileId) {
 
 export function moviesForProfile(profileId) {
   return movies.filter((m) => m.profiles.includes(profileId))
+}
+
+export function ytShowsForProfile(profileId) {
+  return ytShows.filter((y) => y.profiles.includes(profileId))
 }
 
 export function getSeries(id) {

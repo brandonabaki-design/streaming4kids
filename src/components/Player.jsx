@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 // The video fills the whole screen (great on a phone), with a slim top bar
 // holding Back + a big Fullscreen button. If the show still has the
 // placeholder id, we show friendly setup help instead of a broken video.
+// (YouTube-sourced shows are routed to YouTubePlayer by App instead.)
 export default function Player({ show, profile, onClose }) {
   const ready = show.driveId && !show.driveId.startsWith('REPLACE_WITH')
   const stageRef = useRef(null)

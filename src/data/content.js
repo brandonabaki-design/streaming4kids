@@ -155,6 +155,23 @@ export const series = [
   },
 ]
 
+// YouTube-sourced shows. These open in a locked "kiosk" player (no leaving the
+// site, no auto-advance into recommended videos). Give a youtubePlaylistId to
+// play a whole playlist, or a youtubeId for a single video. Ads can still
+// appear on YouTube videos — that's a YouTube limitation, not the app.
+export const ytShows = [
+  {
+    id: 'classical-baby',
+    title: 'Classical Baby',
+    youtubePlaylistId: 'PLSWzYTQvJlLzFvHjQpg1W8zJyqeS-dNG2',
+    profiles: ['noah', 'naia'],
+    emoji: '🎻',
+    color: '#7B4BBE',
+    duration: 'Playlist',
+    thumbnail: 'https://i.ytimg.com/vi/uukpvBH2AX0/hqdefault.jpg',
+  },
+]
+
 export const movies = [
   {
     id: 'curious-george-2006',
