@@ -24,6 +24,25 @@ export const series = [
     tagline: 'Climb aboard Rocket for music, art, and adventures around the world.',
     seasons: [
       {
+        number: 1,
+        episodes: [
+          { id: "le-s01e01", title: "I Love to Conduct", driveId: "1W80bByVcUj9NkqO7KempCWGaydMVqaxU", emoji: "🎼", color: "#E63946", duration: "24 min" },
+          { id: "le-s01e02", title: "Ring Around the Planet", driveId: "1weMEXVhvQ0AIxNODTLbDmyqTonbZ9wfd", emoji: "🪐", color: "#457B9D", duration: "24 min" },
+          { id: "le-s01e03", title: "Hungarian Hiccups", driveId: "16ccdKRJDQHV5GfHTVES9XHOuO6fXFGec", emoji: "🎻", color: "#F4A261", duration: "24 min" },
+          { id: "le-s01e04", title: "Whale Tale", driveId: "16KV23GnaLxtKNmjVBAj8HYPyo8CQiB3Y", emoji: "🐳", color: "#118AB2", duration: "24 min" },
+          { id: "le-s01e05", title: "Pirates Treasure", driveId: "1ef8gSd9wUW13owy2oKD1HZOHNBUtp-8m", emoji: "💰", color: "#2A9D8F", duration: "24 min" },
+          { id: "le-s01e06", title: "The Birthday Balloons", driveId: "1HCzA1EUKNW6ZcV2kcDo5JILuRBmDC7qQ", emoji: "🎈", color: "#EF476F", duration: "24 min" },
+          { id: "le-s01e07", title: "The Legend of the Golden Pyramid", driveId: "1snrqHoXcSCOBoWovPNtf5HZ79oHbW5FY", emoji: "🔺", color: "#FFB703", duration: "24 min" },
+          { id: "le-s01e08", title: "Dragon Kite", driveId: "1NA_aKyVBW5ah2a6hGcFB9ti3EZoKlXo2", emoji: "🐉", color: "#06D6A0", duration: "24 min" },
+          { id: "le-s01e09", title: "Go West, Young Train", driveId: "1xZhPxtrKcoXkK9UQ52n0p7Rd1t9EcTm-", emoji: "🚂", color: "#9C6644", duration: "24 min" },
+          { id: "le-s01e10", title: "Farmer Annie", driveId: "18CPf5kPE1wDDEFA6kcDAyty-Vfg7_0YF", emoji: "🚜", color: "#52B788", duration: "24 min" },
+          { id: "le-s01e11", title: "A Little Einsteins Halloween", driveId: "1yKTHl0nKVAiSJLGbKMeYTVTbRmCNUouK", emoji: "🎃", color: "#F77F00", duration: "24 min" },
+          { id: "le-s01e12", title: "Annie's Solo Mission", driveId: "17dAqWrjP9BrVaUvZo1m0z4NuY6EFPtsk", emoji: "🎤", color: "#9B5DE5", duration: "24 min" },
+          { id: "le-s01e13", title: "The Mouse and the Moon", driveId: "1gPP1SAgKpiy7HmjN82W2XALAixMM6xUg", emoji: "🐭", color: "#5C6BC0", duration: "24 min" },
+          { id: "le-s01e14", title: "The Good Knight and the Bad Knight", driveId: "1b7wO5qPnamXSXHR5p7aUp3SZcc2XgkdY", emoji: "⚔️", color: "#6A4C93", duration: "24 min" },
+        ],
+      },
+      {
         number: 2,
         episodes: [
           { id: "le-s02e01", title: "The Christmas Wish", driveId: "1FxI4eVBUNkRV6k8hT5qs_oijN1hE7M5Z", emoji: "🎄", color: "#E63946", duration: "24 min" },
