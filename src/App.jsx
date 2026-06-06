@@ -9,12 +9,17 @@ import {
   removeRecent,
   setWatched,
   syncFromCloud,
+  clearWatched,
+  clearRecents,
+  isTestingMode,
+  setTestingMode,
 } from './storage.js'
 import ProfileSelect from './components/ProfileSelect.jsx'
 import Browse from './components/Browse.jsx'
 import SeriesDetail from './components/SeriesDetail.jsx'
 import Player from './components/Player.jsx'
 import ParentGate from './components/ParentGate.jsx'
+import SettingsSheet from './components/SettingsSheet.jsx'
 
 // View flow:
 //   no profile  -> ProfileSelect ("Who's watching?")
@@ -27,6 +32,8 @@ export default function App() {
   const [activeSeries, setActiveSeries] = useState(null)
   const [activeShow, setActiveShow] = useState(null)
   const [gate, setGate] = useState(null) // { onPass } or null
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [testing, setTesting] = useState(isTestingMode())
 
   // Bumped on any favorite/watched change so derived sets recompute.
   const [libVersion, setLibVersion] = useState(0)
@@ -78,7 +85,9 @@ export default function App() {
 
   const openShow = useCallback(
     (show) => {
-      if (profileId) {
+      // In Testing mode we don't record anything — a parent can preview videos
+      // without filling up Watched / Continue Watching.
+      if (profileId && !isTestingMode()) {
         recordOpened(profileId, show.id)
         // The Drive embed is cross-origin so we can't detect completion;
         // opening is our "watched" signal. A parent can clear it on the card.
@@ -89,6 +98,19 @@ export default function App() {
     },
     [profileId, bumpLib],
   )
+
+  const handleToggleTesting = useCallback((on) => {
+    setTestingMode(on)
+    setTesting(on)
+  }, [])
+  const handleClearWatched = useCallback(() => {
+    clearWatched(profileId)
+    bumpLib()
+  }, [profileId, bumpLib])
+  const handleClearRecents = useCallback(() => {
+    clearRecents(profileId)
+    bumpLib()
+  }, [profileId, bumpLib])
 
   const handleRemoveRecent = useCallback(
     (id) => {
@@ -123,10 +145,12 @@ export default function App() {
         <Browse
           profile={profile}
           library={library}
+          testing={testing}
           onPlay={openShow}
           onOpenSeries={setActiveSeries}
           onRemoveRecent={handleRemoveRecent}
           onSwitchProfile={handleSwitchProfile}
+          onOpenSettings={() => requestGate(() => setSettingsOpen(true))}
         />
       )}
 
@@ -145,6 +169,17 @@ export default function App() {
           show={activeShow}
           profile={profile}
           onClose={() => setActiveShow(null)}
+        />
+      )}
+
+      {settingsOpen && profile && (
+        <SettingsSheet
+          profile={profile}
+          testing={testing}
+          onToggleTesting={handleToggleTesting}
+          onClearWatched={handleClearWatched}
+          onClearRecents={handleClearRecents}
+          onClose={() => setSettingsOpen(false)}
         />
       )}
 

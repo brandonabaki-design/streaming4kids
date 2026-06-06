@@ -125,3 +125,42 @@ export function toggleWatched(profileId, showId) {
   setWatched(profileId, showId, now)
   return now
 }
+
+export function clearWatched(profileId) {
+  update(profileId, (s) => {
+    s.watched = []
+  })
+}
+
+export function clearRecents(profileId) {
+  update(profileId, (s) => {
+    s.recents = []
+  })
+}
+
+// --- Global flags (not per kid): Testing mode ------------------------------
+// While Testing mode is on, opening a video does NOT mark it watched or add it
+// to Continue Watching — handy for a parent previewing lots of episodes.
+const FLAGS_KEY = 'kidflix.flags.v1'
+
+function readFlags() {
+  try {
+    return JSON.parse(localStorage.getItem(FLAGS_KEY)) || {}
+  } catch {
+    return {}
+  }
+}
+
+export function isTestingMode() {
+  return Boolean(readFlags().testing)
+}
+
+export function setTestingMode(on) {
+  const flags = readFlags()
+  flags.testing = Boolean(on)
+  try {
+    localStorage.setItem(FLAGS_KEY, JSON.stringify(flags))
+  } catch {
+    /* ignore */
+  }
+}

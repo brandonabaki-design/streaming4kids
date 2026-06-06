@@ -14,10 +14,12 @@ import SeriesCard from './SeriesCard.jsx'
 export default function Browse({
   profile,
   library,
+  testing,
   onPlay,
   onOpenSeries,
   onRemoveRecent,
   onSwitchProfile,
+  onOpenSettings,
 }) {
   const { favSet, watchedSet, onToggleFavorite, onToggleWatched } = library
 
@@ -64,13 +66,30 @@ export default function Browse({
           <span className="brand__mark">▶</span>
           <span className="brand__name">KidFlix</span>
         </div>
-        <button className="whoami" onClick={onSwitchProfile}>
-          <span className="whoami__avatar" style={{ background: profile.color }}>
-            {profile.emoji}
-          </span>
-          <span className="whoami__name">{profile.name}</span>
-          <span className="whoami__switch">Switch</span>
-        </button>
+        <div className="topbar__right">
+          {testing && (
+            <span className="testing-pill" title="Testing mode is on">
+              🧪 Testing
+            </span>
+          )}
+          <button
+            className="iconbtn"
+            onClick={onOpenSettings}
+            aria-label="Parent settings"
+          >
+            ⚙
+          </button>
+          <button className="whoami" onClick={onSwitchProfile}>
+            <span
+              className="whoami__avatar"
+              style={{ background: profile.color }}
+            >
+              {profile.emoji}
+            </span>
+            <span className="whoami__name">{profile.name}</span>
+            <span className="whoami__switch">Switch</span>
+          </button>
+        </div>
       </header>
 
       {featured && (
