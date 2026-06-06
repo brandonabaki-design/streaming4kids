@@ -164,3 +164,32 @@ export function setTestingMode(on) {
     /* ignore */
   }
 }
+
+// --- Audiobook progress (resume where you left off) ------------------------
+// Stored separately from the watch state, keyed by profile + book id, as
+// { trackIndex, time } so a bedtime story can pick up exactly where it stopped.
+const AUDIO_KEY = 'kidflix.audio.v1'
+
+function readAudio() {
+  try {
+    return JSON.parse(localStorage.getItem(AUDIO_KEY)) || {}
+  } catch {
+    return {}
+  }
+}
+
+export function getAudioProgress(profileId, bookId) {
+  const all = readAudio()
+  return (all[profileId] && all[profileId][bookId]) || null
+}
+
+export function setAudioProgress(profileId, bookId, progress) {
+  const all = readAudio()
+  all[profileId] = all[profileId] || {}
+  all[profileId][bookId] = progress
+  try {
+    localStorage.setItem(AUDIO_KEY, JSON.stringify(all))
+  } catch {
+    /* ignore */
+  }
+}

@@ -155,6 +155,25 @@ export const series = [
   },
 ]
 
+// Audiobooks / bedtime stories. These open in a native audio player with a
+// sleep timer + resume. Each book uses ONE source:
+//   audioUrl:        a direct .mp3/.m4a link (e.g. a LibriVox file on
+//                    archive.org) — most reliable, full sleep-timer support.
+//   driveAudioId:    a Google Drive audio file id (best for smaller chapters).
+//   youtubePlaylistId / youtubeId: routes to the locked kiosk player instead.
+// Multi-chapter books use `tracks: [{ title, audioUrl | driveAudioId }, ...]`.
+//
+// Empty for now — add entries here (or send me Drive files / LibriVox links /
+// a YouTube playlist) and the "Audiobooks" shelf appears automatically.
+// Example shape:
+//   {
+//     id: 'peter-rabbit', title: 'The Tale of Peter Rabbit',
+//     author: 'Beatrix Potter', profiles: ['noah', 'naia'],
+//     emoji: '🐰', color: '#6B8E5A', duration: '15 min',
+//     audioUrl: 'https://.../peterrabbit.mp3',
+//   },
+export const audiobooks = []
+
 // YouTube-sourced shows. These open in a locked "kiosk" player (no leaving the
 // site, no auto-advance into recommended videos). Give a youtubePlaylistId to
 // play a whole playlist, or a youtubeId for a single video. Ads can still

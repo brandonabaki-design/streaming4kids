@@ -4,6 +4,7 @@ import {
   seriesForProfile,
   moviesForProfile,
   ytShowsForProfile,
+  audiobooksForProfile,
   getPlayable,
 } from '../library.js'
 import Shelf from './Shelf.jsx'
@@ -27,6 +28,7 @@ export default function Browse({
   const shows = useMemo(() => seriesForProfile(profile.id), [profile.id])
   const films = useMemo(() => moviesForProfile(profile.id), [profile.id])
   const ytShows = useMemo(() => ytShowsForProfile(profile.id), [profile.id])
+  const books = useMemo(() => audiobooksForProfile(profile.id), [profile.id])
 
   // favSet/watchedSet change identity on every toggle, so these recompute and
   // the Continue Watching / Favorites shelves stay fresh.
@@ -163,6 +165,10 @@ export default function Browse({
 
         {ytShows.length > 0 && (
           <Shelf title="Music & Art">{ytShows.map(playableCard)}</Shelf>
+        )}
+
+        {books.length > 0 && (
+          <Shelf title="Audiobooks 🎧">{books.map(playableCard)}</Shelf>
         )}
       </main>
 

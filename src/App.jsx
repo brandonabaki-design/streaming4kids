@@ -19,6 +19,8 @@ import Browse from './components/Browse.jsx'
 import SeriesDetail from './components/SeriesDetail.jsx'
 import Player from './components/Player.jsx'
 import YouTubePlayer from './components/YouTubePlayer.jsx'
+import AudioPlayer from './components/AudioPlayer.jsx'
+import { isAudiobook } from './library.js'
 import ParentGate from './components/ParentGate.jsx'
 import SettingsSheet from './components/SettingsSheet.jsx'
 
@@ -92,7 +94,9 @@ export default function App() {
         recordOpened(profileId, show.id)
         // The Drive embed is cross-origin so we can't detect completion;
         // opening is our "watched" signal. A parent can clear it on the card.
-        setWatched(profileId, show.id, true)
+        // Audiobooks track their own resume position, so we don't mark those
+        // "watched" (that would just dim a book you're mid-way through).
+        if (!isAudiobook(show)) setWatched(profileId, show.id, true)
         bumpLib()
       }
       setActiveShow(show)
@@ -166,7 +170,13 @@ export default function App() {
       )}
 
       {activeShow &&
-        (activeShow.youtubeId || activeShow.youtubePlaylistId ? (
+        (isAudiobook(activeShow) ? (
+          <AudioPlayer
+            book={activeShow}
+            profile={profile}
+            onClose={() => setActiveShow(null)}
+          />
+        ) : activeShow.youtubeId || activeShow.youtubePlaylistId ? (
           <YouTubePlayer show={activeShow} onClose={() => setActiveShow(null)} />
         ) : (
           <Player
