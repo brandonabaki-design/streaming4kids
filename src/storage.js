@@ -151,6 +151,14 @@ function readFlags() {
   }
 }
 
+function writeFlags(flags) {
+  try {
+    localStorage.setItem(FLAGS_KEY, JSON.stringify(flags))
+  } catch {
+    /* ignore */
+  }
+}
+
 export function isTestingMode() {
   return Boolean(readFlags().testing)
 }
@@ -158,11 +166,19 @@ export function isTestingMode() {
 export function setTestingMode(on) {
   const flags = readFlags()
   flags.testing = Boolean(on)
-  try {
-    localStorage.setItem(FLAGS_KEY, JSON.stringify(flags))
-  } catch {
-    /* ignore */
-  }
+  writeFlags(flags)
+}
+
+// When on, the app re-locks behind the grown-up gate whenever it's left and
+// reopened (a soft complement to the tablet's own kiosk lock).
+export function isReentryLock() {
+  return Boolean(readFlags().reentryLock)
+}
+
+export function setReentryLock(on) {
+  const flags = readFlags()
+  flags.reentryLock = Boolean(on)
+  writeFlags(flags)
 }
 
 // --- Audiobook progress (resume where you left off) ------------------------

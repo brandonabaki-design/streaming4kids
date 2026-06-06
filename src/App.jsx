@@ -13,6 +13,8 @@ import {
   clearRecents,
   isTestingMode,
   setTestingMode,
+  isReentryLock,
+  setReentryLock,
 } from './storage.js'
 import ProfileSelect from './components/ProfileSelect.jsx'
 import Browse from './components/Browse.jsx'
@@ -37,6 +39,8 @@ export default function App() {
   const [gate, setGate] = useState(null) // { onPass } or null
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [testing, setTesting] = useState(isTestingMode())
+  const [reentryLock, setReentry] = useState(isReentryLock())
+  const [locked, setLocked] = useState(false)
 
   // Bumped on any favorite/watched change so derived sets recompute.
   const [libVersion, setLibVersion] = useState(0)
@@ -108,6 +112,22 @@ export default function App() {
     setTestingMode(on)
     setTesting(on)
   }, [])
+  const handleToggleReentry = useCallback((on) => {
+    setReentryLock(on)
+    setReentry(on)
+  }, [])
+
+  // Re-entry lock: when the app is sent to the background and reopened, drop
+  // the grown-up gate over everything. A soft complement to the tablet's own
+  // kiosk lock (Guided Access / Screen Pinning) — see the README.
+  useEffect(() => {
+    if (!reentryLock || !profileId) return
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') setLocked(true)
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [reentryLock, profileId])
   const handleClearWatched = useCallback(() => {
     clearWatched(profileId)
     bumpLib()
@@ -191,6 +211,8 @@ export default function App() {
           profile={profile}
           testing={testing}
           onToggleTesting={handleToggleTesting}
+          reentryLock={reentryLock}
+          onToggleReentry={handleToggleReentry}
           onClearWatched={handleClearWatched}
           onClearRecents={handleClearRecents}
           onClose={() => setSettingsOpen(false)}
@@ -207,6 +229,9 @@ export default function App() {
           onCancel={() => setGate(null)}
         />
       )}
+
+      {/* The re-entry lock sits above everything else, including casual gates. */}
+      {locked && <ParentGate lock onPass={() => setLocked(false)} />}
     </div>
   )
 }

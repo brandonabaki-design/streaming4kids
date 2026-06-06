@@ -4,6 +4,8 @@ export default function SettingsSheet({
   profile,
   testing,
   onToggleTesting,
+  reentryLock,
+  onToggleReentry,
   onClearWatched,
   onClearRecents,
   onClose,
@@ -31,6 +33,27 @@ export default function SettingsSheet({
             </span>
           </span>
           <span className={`switch ${testing ? 'is-on' : ''}`} aria-hidden="true">
+            <span className="switch__dot" />
+          </span>
+        </button>
+
+        <button
+          className="setting"
+          onClick={() => onToggleReentry(!reentryLock)}
+          aria-pressed={reentryLock}
+        >
+          <span className="setting__text">
+            <span className="setting__label">Re-entry lock</span>
+            <span className="setting__desc">
+              If the app is left and reopened, it locks behind a grown-up math
+              question. Pair with your tablet's Guided Access (iPad) or Screen
+              Pinning (Android) for a full kiosk lock.
+            </span>
+          </span>
+          <span
+            className={`switch ${reentryLock ? 'is-on' : ''}`}
+            aria-hidden="true"
+          >
             <span className="switch__dot" />
           </span>
         </button>
