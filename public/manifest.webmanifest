@@ -1,0 +1,19 @@
+{
+  "name": "KidFlix — Noah & Naia",
+  "short_name": "KidFlix",
+  "description": "A safe, simple streaming app for Noah and Naia.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1020",
+  "theme_color": "#0f1020",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -3,26 +3,30 @@ import { profiles } from '../data/content.js'
 // The "Who's watching?" screen — big, friendly, tappable avatars.
 export default function ProfileSelect({ onSelect }) {
   return (
-    <div className="profile-select">
-      <h1 className="profile-select__title">Who's watching?</h1>
-      <div className="profile-select__grid">
+    <div className="whos">
+      <div className="whos__brand">
+        <span className="brand__mark">▶</span>
+        <span className="brand__name">KidFlix</span>
+      </div>
+      <h1 className="whos__title">Who's watching?</h1>
+      <div className="whos__grid">
         {profiles.map((p) => (
           <button
             key={p.id}
-            className="profile-card"
+            className="avatarcard"
             onClick={() => onSelect(p.id)}
             aria-label={`Watch as ${p.name}`}
           >
             <span
-              className="profile-card__avatar"
+              className="avatarcard__face"
               style={{
-                background: `radial-gradient(circle at 30% 30%, ${p.color}, #1a1b2e)`,
+                background: `radial-gradient(circle at 32% 28%, ${p.color}, #1a1b2e 78%)`,
               }}
             >
-              <span className="profile-card__emoji">{p.emoji}</span>
+              <span className="avatarcard__emoji">{p.emoji}</span>
             </span>
-            <span className="profile-card__name">{p.name}</span>
-            <span className="profile-card__age">{p.ageLabel}</span>
+            <span className="avatarcard__name">{p.name}</span>
+            <span className="avatarcard__age">{p.ageLabel}</span>
           </button>
         ))}
       </div>

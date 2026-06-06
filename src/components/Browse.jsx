@@ -1,133 +1,133 @@
-import { useMemo, useState, useEffect } from 'react'
-import { shows, categoryOrder } from '../data/content.js'
+import { useMemo } from 'react'
+import { getRecents, getFavorites } from '../storage.js'
 import {
-  getFavorites,
-  getRecents,
-  getWatched,
-  toggleFavorite,
-  toggleWatched,
-} from '../storage.js'
-import Row from './Row.jsx'
+  seriesForProfile,
+  moviesForProfile,
+  getPlayable,
+} from '../library.js'
+import Shelf from './Shelf.jsx'
+import Card from './Card.jsx'
+import SeriesCard from './SeriesCard.jsx'
 
-// Builds the rows of shows for the selected kid and lays out the browse screen.
-export default function Browse({ profile, refreshKey, onPlay, onSwitchProfile }) {
-  // `version` forces a re-read of localStorage after a heart/watched toggle.
-  // It also bumps when `refreshKey` changes (e.g. returning from a video, which
-  // auto-marks the episode watched).
-  const [version, setVersion] = useState(0)
-  const bump = () => setVersion((v) => v + 1)
-  useEffect(() => {
-    setVersion((v) => v + 1)
-  }, [refreshKey])
+// The home screen for a kid: a hero, then shelves of series and movies, plus
+// Continue Watching and Favorites.
+export default function Browse({
+  profile,
+  library,
+  onPlay,
+  onOpenSeries,
+  onSwitchProfile,
+}) {
+  const { favSet, watchedSet, onToggleFavorite, onToggleWatched } = library
 
-  const showsForKid = useMemo(
-    () => shows.filter((s) => s.profiles.includes(profile.id)),
-    [profile.id],
-  )
+  const shows = useMemo(() => seriesForProfile(profile.id), [profile.id])
+  const films = useMemo(() => moviesForProfile(profile.id), [profile.id])
 
-  const byId = useMemo(() => {
-    const map = {}
-    for (const s of shows) map[s.id] = s
-    return map
-  }, [])
-
-  // Re-derived from storage whenever `version` changes; passed down to cards.
-  const favSet = useMemo(
-    () => new Set(getFavorites(profile.id)),
-    [profile.id, version],
-  )
-  const watchedSet = useMemo(
-    () => new Set(getWatched(profile.id)),
-    [profile.id, version],
-  )
-
-  const rows = useMemo(() => {
-    const result = []
-    for (const category of categoryOrder) {
-      let items
-      if (category === 'Favorites') {
-        items = getFavorites(profile.id)
-          .map((id) => byId[id])
-          .filter((s) => s && s.profiles.includes(profile.id))
-      } else if (category === 'Continue Watching') {
-        items = getRecents(profile.id)
-          .map((id) => byId[id])
-          .filter((s) => s && s.profiles.includes(profile.id))
-      } else {
-        items = showsForKid.filter((s) => s.category === category)
-      }
-      if (items.length > 0) result.push({ category, items })
-    }
-    return result
+  // favSet/watchedSet change identity on every toggle, so these recompute and
+  // the Continue Watching / Favorites shelves stay fresh.
+  const recents = useMemo(
+    () =>
+      getRecents(profile.id)
+        .map(getPlayable)
+        .filter((p) => p && p.profiles.includes(profile.id)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile.id, showsForKid, byId, version])
+    [profile.id, watchedSet],
+  )
+  const favorites = useMemo(
+    () =>
+      getFavorites(profile.id)
+        .map(getPlayable)
+        .filter((p) => p && p.profiles.includes(profile.id)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [profile.id, favSet],
+  )
 
-  const handleToggleFavorite = (showId) => {
-    toggleFavorite(profile.id, showId)
-    bump()
-  }
-  const handleToggleWatched = (showId) => {
-    toggleWatched(profile.id, showId)
-    bump()
-  }
+  const featured = shows[0] || null
 
-  const featured = showsForKid[0]
+  const playableCard = (item) => (
+    <Card
+      key={item.id}
+      show={item}
+      fav={favSet.has(item.id)}
+      watched={watchedSet.has(item.id)}
+      onPlay={onPlay}
+      onToggleFavorite={onToggleFavorite}
+      onToggleWatched={onToggleWatched}
+    />
+  )
 
   return (
     <div className="browse">
-      <header className="browse__header">
-        <div className="browse__brand">
-          <span className="browse__brand-mark">▶</span> KidFlix
+      <header className="topbar">
+        <div className="brand">
+          <span className="brand__mark">▶</span>
+          <span className="brand__name">KidFlix</span>
         </div>
-        <button className="browse__profile" onClick={onSwitchProfile}>
-          <span
-            className="browse__profile-avatar"
-            style={{ background: profile.color }}
-          >
+        <button className="whoami" onClick={onSwitchProfile}>
+          <span className="whoami__avatar" style={{ background: profile.color }}>
             {profile.emoji}
           </span>
-          <span className="browse__profile-name">{profile.name}</span>
+          <span className="whoami__name">{profile.name}</span>
+          <span className="whoami__switch">Switch</span>
         </button>
       </header>
 
       {featured && (
-        <section
-          className="hero"
-          style={{
-            background: `linear-gradient(120deg, ${featured.color} 0%, #14152b 70%)`,
-          }}
-        >
-          <div className="hero__emoji" aria-hidden="true">
+        <section className="hero">
+          <div
+            className="hero__bg"
+            style={{
+              background: `radial-gradient(120% 90% at 18% 10%, ${featured.color} 0%, #15162c 55%, #0f1020 100%)`,
+            }}
+          />
+          <div className="hero__poster" aria-hidden="true">
             {featured.emoji}
           </div>
           <div className="hero__content">
-            <p className="hero__eyebrow">Hi {profile.name}! Ready to watch?</p>
+            <p className="hero__eyebrow">Hi {profile.name} — what shall we watch?</p>
             <h1 className="hero__title">{featured.title}</h1>
-            <button className="hero__play" onClick={() => onPlay(featured)}>
-              ▶ Play
-            </button>
+            {featured.tagline && <p className="hero__tagline">{featured.tagline}</p>}
+            <div className="hero__actions">
+              <button
+                className="bigbtn bigbtn--primary"
+                onClick={() => onOpenSeries(featured)}
+              >
+                ▶ Watch
+              </button>
+              <button
+                className="bigbtn bigbtn--ghost"
+                onClick={() => onOpenSeries(featured)}
+              >
+                ≡ Episodes
+              </button>
+            </div>
           </div>
         </section>
       )}
 
-      <main className="browse__rows">
-        {rows.map((row) => (
-          <Row
-            key={row.category}
-            title={row.category}
-            items={row.items}
-            favSet={favSet}
-            watchedSet={watchedSet}
-            onPlay={onPlay}
-            onToggleFavorite={handleToggleFavorite}
-            onToggleWatched={handleToggleWatched}
-          />
-        ))}
+      <main className="shelves">
+        {recents.length > 0 && (
+          <Shelf title="Continue Watching">{recents.map(playableCard)}</Shelf>
+        )}
+
+        {favorites.length > 0 && (
+          <Shelf title="Favorites ♥">{favorites.map(playableCard)}</Shelf>
+        )}
+
+        {shows.length > 0 && (
+          <Shelf title="Shows">
+            {shows.map((s) => (
+              <SeriesCard key={s.id} series={s} onOpen={onOpenSeries} />
+            ))}
+          </Shelf>
+        )}
+
+        {films.length > 0 && (
+          <Shelf title="Movies">{films.map(playableCard)}</Shelf>
+        )}
       </main>
 
-      <footer className="browse__footer">
-        Made with ♥ for {profile.name}
-      </footer>
+      <footer className="browse__footer">Made with ♥ for {profile.name}</footer>
     </div>
   )
 }
