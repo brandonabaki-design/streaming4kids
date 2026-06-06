@@ -426,6 +426,26 @@ button {
   color: #fff;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
+.card__remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+.card__remove:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
 .card__heart.is-fav {
   color: var(--accent);
 }

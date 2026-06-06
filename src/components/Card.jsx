@@ -14,10 +14,15 @@ export default function Card({
   onPlay,
   onToggleFavorite,
   onToggleWatched,
+  onRemove,
 }) {
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const imgSrc = show.thumbnail || driveThumbnail(show.driveId)
+
+  // In the Continue Watching shelf we show a Remove button instead of the
+  // heart/check, and skip the "watched" dim/tag (everything there is watched).
+  const inRecents = Boolean(onRemove)
 
   const stop = (fn) => (e) => {
     e.stopPropagation()
@@ -26,7 +31,7 @@ export default function Card({
 
   return (
     <button
-      className={`card ${watched ? 'is-watched' : ''}`}
+      className={`card ${watched && !inRecents ? 'is-watched' : ''}`}
       onClick={() => onPlay(show)}
       aria-label={`Play ${show.title}`}
     >
@@ -55,29 +60,44 @@ export default function Card({
           </span>
         )}
 
-        <span
-          className={`card__check ${watched ? 'is-on' : ''}`}
-          onClick={stop(() => onToggleWatched(show.id))}
-          role="button"
-          aria-label={watched ? 'Mark as not watched' : 'Mark as watched'}
-        >
-          ✓
-        </span>
+        {inRecents ? (
+          <span
+            className="card__remove"
+            onClick={stop(() => onRemove(show.id))}
+            role="button"
+            aria-label="Remove from Continue Watching"
+          >
+            ✕
+          </span>
+        ) : (
+          <>
+            <span
+              className={`card__check ${watched ? 'is-on' : ''}`}
+              onClick={stop(() => onToggleWatched(show.id))}
+              role="button"
+              aria-label={watched ? 'Mark as not watched' : 'Mark as watched'}
+            >
+              ✓
+            </span>
 
-        <span
-          className={`card__heart ${fav ? 'is-fav' : ''}`}
-          onClick={stop(() => onToggleFavorite(show.id))}
-          role="button"
-          aria-label={fav ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          {fav ? '♥' : '♡'}
-        </span>
+            <span
+              className={`card__heart ${fav ? 'is-fav' : ''}`}
+              onClick={stop(() => onToggleFavorite(show.id))}
+              role="button"
+              aria-label={fav ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              {fav ? '♥' : '♡'}
+            </span>
+          </>
+        )}
 
         <span className="card__play" aria-hidden="true">
           <span className="card__play-icon">▶</span>
         </span>
 
-        {watched && <span className="card__watched-tag">Watched</span>}
+        {watched && !inRecents && (
+          <span className="card__watched-tag">Watched</span>
+        )}
       </div>
 
       <div className="card__meta">

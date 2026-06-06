@@ -6,6 +6,7 @@ import {
   toggleFavorite,
   toggleWatched,
   recordOpened,
+  removeRecent,
   setWatched,
   syncFromCloud,
 } from './storage.js'
@@ -89,6 +90,14 @@ export default function App() {
     [profileId, bumpLib],
   )
 
+  const handleRemoveRecent = useCallback(
+    (id) => {
+      removeRecent(profileId, id)
+      bumpLib()
+    },
+    [profileId, bumpLib],
+  )
+
   const requestGate = useCallback((onPass) => setGate({ onPass }), [])
 
   const handleSwitchProfile = useCallback(() => {
@@ -116,6 +125,7 @@ export default function App() {
           library={library}
           onPlay={openShow}
           onOpenSeries={setActiveSeries}
+          onRemoveRecent={handleRemoveRecent}
           onSwitchProfile={handleSwitchProfile}
         />
       )}

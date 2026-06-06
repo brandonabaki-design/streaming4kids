@@ -16,6 +16,7 @@ export default function Browse({
   library,
   onPlay,
   onOpenSeries,
+  onRemoveRecent,
   onSwitchProfile,
 }) {
   const { favSet, watchedSet, onToggleFavorite, onToggleWatched } = library
@@ -107,7 +108,20 @@ export default function Browse({
 
       <main className="shelves">
         {recents.length > 0 && (
-          <Shelf title="Continue Watching">{recents.map(playableCard)}</Shelf>
+          <Shelf title="Continue Watching">
+            {recents.map((item) => (
+              <Card
+                key={item.id}
+                show={item}
+                fav={favSet.has(item.id)}
+                watched={watchedSet.has(item.id)}
+                onPlay={onPlay}
+                onToggleFavorite={onToggleFavorite}
+                onToggleWatched={onToggleWatched}
+                onRemove={onRemoveRecent}
+              />
+            ))}
+          </Shelf>
         )}
 
         {favorites.length > 0 && (

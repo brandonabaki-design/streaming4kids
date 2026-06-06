@@ -97,6 +97,12 @@ export function recordOpened(profileId, showId) {
   })
 }
 
+export function removeRecent(profileId, showId) {
+  update(profileId, (s) => {
+    s.recents = s.recents.filter((id) => id !== showId)
+  })
+}
+
 // --- Watched (the green check) ---------------------------------------------
 export function getWatched(profileId) {
   return profileState(readAll(), profileId).watched
