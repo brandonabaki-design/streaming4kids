@@ -4,7 +4,7 @@ import ProfileSelect from './components/ProfileSelect.jsx'
 import Browse from './components/Browse.jsx'
 import Player from './components/Player.jsx'
 import ParentGate from './components/ParentGate.jsx'
-import { recordOpened, setWatched } from './storage.js'
+import { recordOpened, setWatched, syncFromCloud } from './storage.js'
 
 // Top-level app state machine:
 //   - no profile selected  -> ProfileSelect ("Who's watching?")
@@ -25,6 +25,19 @@ export default function App() {
   useEffect(() => {
     document.title = profile ? `KidFlix — ${profile.name}` : 'KidFlix'
   }, [profile])
+
+  // When a kid is picked, pull their saved Watched/Favorites from the cloud
+  // (if sync is configured) and merge, then refresh the browse grid.
+  useEffect(() => {
+    if (!profileId) return
+    let cancelled = false
+    syncFromCloud(profileId).then((changed) => {
+      if (changed && !cancelled) setBrowseVersion((v) => v + 1)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [profileId])
 
   const openShow = useCallback(
     (show) => {

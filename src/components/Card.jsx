@@ -1,5 +1,8 @@
-// A single show card. Art is either a thumbnail image or a colorful
-// gradient with a big emoji (so no image files are required to get started).
+import { useState } from 'react'
+import { driveThumbnail } from '../drive.js'
+
+// A single show card. Art is a real Google Drive thumbnail (a frame from the
+// video) when available, otherwise a colorful gradient with a big emoji.
 //
 // Favorite (heart) and watched (check) are CONTROLLED by the parent so the
 // whole browse screen stays in sync after a video is opened.
@@ -11,6 +14,10 @@ export default function Card({
   onToggleFavorite,
   onToggleWatched,
 }) {
+  const [imgFailed, setImgFailed] = useState(false)
+  const imgSrc = show.thumbnail || driveThumbnail(show.driveId)
+  const showImg = imgSrc && !imgFailed
+
   const handleHeart = (e) => {
     e.stopPropagation()
     onToggleFavorite(show.id)
@@ -28,8 +35,14 @@ export default function Card({
       aria-label={`Play ${show.title}`}
     >
       <div className="card__art">
-        {show.thumbnail ? (
-          <img className="card__img" src={show.thumbnail} alt="" />
+        {showImg ? (
+          <img
+            className="card__img"
+            src={imgSrc}
+            alt=""
+            loading="lazy"
+            onError={() => setImgFailed(true)}
+          />
         ) : (
           <div
             className="card__placeholder"

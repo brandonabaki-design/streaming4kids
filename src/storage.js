@@ -3,6 +3,12 @@
 //   favorites  - shows they've hearted
 //   recents    - recently opened, for the "Continue Watching" row
 //   watched    - episodes/shows they've already seen (the green check)
+//
+// When cloud sync is configured (see sync.js / sync-config.js), every change
+// is also pushed to the cloud, and syncFromCloud() merges a device's state
+// with what's stored remotely. With sync off, this is all plain localStorage.
+
+import { pullRemote, pushRemote } from './sync.js'
 
 const KEY = 'kidflix.v1'
 
@@ -37,6 +43,26 @@ function update(profileId, mutate) {
   mutate(state)
   data[profileId] = state
   writeAll(data)
+  pushRemote(profileId, state) // no-op when sync is disabled
+}
+
+function unionUnique(...lists) {
+  return [...new Set(lists.flat().filter(Boolean))]
+}
+
+// Pull this kid's state from the cloud and merge it into local storage:
+// favorites and watched are unioned (nothing gets lost), recents keep the most
+// recent 10. The merged result is pushed back so the cloud also gains anything
+// that was only on this device. Safe no-op when sync is disabled.
+export async function syncFromCloud(profileId) {
+  const remote = await pullRemote(profileId)
+  if (!remote) return false
+  update(profileId, (s) => {
+    s.favorites = unionUnique(remote.favorites, s.favorites)
+    s.watched = unionUnique(remote.watched, s.watched)
+    s.recents = unionUnique(s.recents, remote.recents).slice(0, 10)
+  })
+  return true
 }
 
 // --- Favorites -------------------------------------------------------------
