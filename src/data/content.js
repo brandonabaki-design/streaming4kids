@@ -4,11 +4,13 @@
 //  This is the ONLY file you normally need to edit to add or remove shows.
 //
 //  HOW TO ADD A VIDEO FROM YOUR GOOGLE DRIVE
-//  1. In Google Drive, upload your video (mp4 works best).
-//  2. Right-click the file -> Share -> set "General access" to
-//     "Anyone with the link" -> "Viewer". (Needed so the app can play it.)
-//  3. Click "Copy link". It looks like:
-//        https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz/view?usp=sharing
+//  1. In Google Drive, upload your video (mp4 works best; .mkv usually will
+//     NOT play in a browser — see the note at the bottom of this file).
+//  2. Make sure the file is reachable: either the whole "Kids Media" folder
+//     is shared "Anyone with the link -> Viewer", or the kids' device is
+//     signed into the Google account that owns the files.
+//  3. Copy the file's share link. It looks like:
+//        https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz/view
 //     The long code between /d/ and /view is the DRIVE FILE ID.
 //  4. Add a new entry to the `shows` array below, pasting that ID as `driveId`.
 //
@@ -39,136 +41,183 @@ export const profiles = [
 export const categoryOrder = [
   'Continue Watching',
   'Favorites',
-  'Nursery Rhymes & Songs',
-  'Learning Time',
-  'Story Time',
-  'Animals & Nature',
-  'Calm & Sleepy',
+  'Little Einsteins',
+  'Movies',
 ]
 
 // --- The shows ---------------------------------------------------------------
-// NOTE: the `driveId` values below are PLACEHOLDERS. The cards will render and
-// the whole app works, but tapping play will show a friendly "add your video"
-// message until you replace each driveId with a real Google Drive file ID.
+// These point at real videos on brandon.abaki@gmail.com's Google Drive.
+// For them to PLAY, the "Kids Media" folder must be shared
+// "Anyone with the link -> Viewer" (see the note at the bottom of this file).
 export const shows = [
+  // === Little Einsteins — Season 2 (mp4) ===================================
   {
-    id: 'abc-song',
-    title: 'The ABC Song',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Nursery Rhymes & Songs',
+    id: 'le-s02e01',
+    title: '1. The Christmas Wish',
+    driveId: '1FxI4eVBUNkRV6k8hT5qs_oijN1hE7M5Z',
+    category: 'Little Einsteins',
     profiles: ['noah', 'naia'],
-    emoji: '🔤',
-    color: '#FF9F1C',
-    duration: '2 min',
+    emoji: '🎄',
+    color: '#E63946',
+    duration: '24 min',
   },
   {
-    id: 'twinkle-star',
-    title: 'Twinkle Twinkle Little Star',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Nursery Rhymes & Songs',
+    id: 'le-s02e02',
+    title: '2. How We Became Little Einsteins',
+    driveId: '1Kot2PhR4dqHFak1JESXFBxdoLMm-JNDU',
+    category: 'Little Einsteins',
     profiles: ['noah', 'naia'],
-    emoji: '⭐',
-    color: '#5C6BC0',
-    duration: '3 min',
+    emoji: '🚀',
+    color: '#457B9D',
+    duration: '24 min',
   },
   {
-    id: 'wheels-bus',
-    title: 'The Wheels on the Bus',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Nursery Rhymes & Songs',
+    id: 'le-s02e03',
+    title: '3. Jump for Joey',
+    driveId: '1RM2DdY-flDDrszyX2gc7KcSQ4Ii5F9Pl',
+    category: 'Little Einsteins',
     profiles: ['noah', 'naia'],
-    emoji: '🚌',
-    color: '#EF476F',
-    duration: '3 min',
-  },
-  {
-    id: 'count-to-ten',
-    title: 'Count to Ten',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Learning Time',
-    profiles: ['noah', 'naia'],
-    emoji: '🔢',
-    color: '#06D6A0',
-    duration: '4 min',
-  },
-  {
-    id: 'colors-shapes',
-    title: 'Colors & Shapes',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Learning Time',
-    profiles: ['noah', 'naia'],
-    emoji: '🟦',
-    color: '#118AB2',
-    duration: '5 min',
-  },
-  {
-    id: 'first-words',
-    title: 'My First Words',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Learning Time',
-    profiles: ['naia'],
-    emoji: '💬',
-    color: '#FFB703',
-    duration: '4 min',
-  },
-  {
-    id: 'three-pigs',
-    title: 'The Three Little Pigs',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Story Time',
-    profiles: ['noah'],
-    emoji: '🐷',
+    emoji: '🦘',
     color: '#F4A261',
-    duration: '7 min',
+    duration: '24 min',
   },
   {
-    id: 'goodnight-moon',
-    title: 'Goodnight Moon',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Story Time',
+    id: 'le-s02e04',
+    title: '4. The Northern Night Light',
+    driveId: '1r1ejcXnR-11PIi-S_hxr30rmdNKU63dL',
+    category: 'Little Einsteins',
+    profiles: ['noah', 'naia'],
+    emoji: '🌌',
+    color: '#3A0CA3',
+    duration: '24 min',
+  },
+  {
+    id: 'le-s02e05',
+    title: "5. O Yes, O Yes, It's Springtime!",
+    driveId: '1nUcsxl-CLYyJ24EEPNgNbhh1YVNGmHZ6',
+    category: 'Little Einsteins',
+    profiles: ['noah', 'naia'],
+    emoji: '🌸',
+    color: '#FF6BB5',
+    duration: '24 min',
+  },
+  {
+    id: 'le-s02e06',
+    title: '6. A Tall Totem Tale',
+    driveId: '1f_AEQaMYJzMiq1S4jraemnUdS-IaxsZG',
+    category: 'Little Einsteins',
+    profiles: ['noah', 'naia'],
+    emoji: '🗿',
+    color: '#2A9D8F',
+    duration: '24 min',
+  },
+  {
+    id: 'le-s02e07',
+    title: '7. The Incredible Shrinking Machine',
+    driveId: '1E-d4tk-4VN8mPyi0ca7YjDwgBU3StoRb',
+    category: 'Little Einsteins',
+    profiles: ['noah', 'naia'],
+    emoji: '🔬',
+    color: '#118AB2',
+    duration: '24 min',
+  },
+  {
+    id: 'le-s02e08',
+    title: '8. Duck, Duck, June',
+    driveId: '1vlNOKYfN5t_WWlUPcrQCj7D3_yb5nU9Z',
+    category: 'Little Einsteins',
+    profiles: ['noah', 'naia'],
+    emoji: '🦆',
+    color: '#06D6A0',
+    duration: '24 min',
+  },
+  {
+    id: 'le-s02e09',
+    title: '9. Rocket Safari',
+    driveId: '1xEEXqLYp8gMeADUr-UIa49pCJ6_HlJ6Z',
+    category: 'Little Einsteins',
+    profiles: ['noah', 'naia'],
+    emoji: '🦁',
+    color: '#FFB703',
+    duration: '24 min',
+  },
+  {
+    id: 'le-s02e10',
+    title: '10. Knock On Wood',
+    driveId: '1qg0sxQ9dsoIEV-EkHxXjL3IId4bwlT-N',
+    category: 'Little Einsteins',
+    profiles: ['noah', 'naia'],
+    emoji: '🌳',
+    color: '#52B788',
+    duration: '24 min',
+  },
+  {
+    id: 'le-s02e11',
+    title: '11. A Galactic Goodnight',
+    driveId: '1y8bPzpPNECYoZLEiLyEA2LUX3YUl1ZOw',
+    category: 'Little Einsteins',
     profiles: ['noah', 'naia'],
     emoji: '🌙',
-    color: '#3A0CA3',
-    duration: '6 min',
+    color: '#5C6BC0',
+    duration: '24 min',
   },
   {
-    id: 'farm-animals',
-    title: 'Farm Animal Sounds',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Animals & Nature',
+    id: 'le-s02e12',
+    title: '12. The Birthday Machine',
+    driveId: '15dsaeaEF42SccNHP7ENBpTx9ubIPEnT3',
+    category: 'Little Einsteins',
     profiles: ['noah', 'naia'],
-    emoji: '🐮',
-    color: '#2A9D8F',
-    duration: '4 min',
+    emoji: '🎂',
+    color: '#EF476F',
+    duration: '24 min',
   },
   {
-    id: 'ocean-friends',
-    title: 'Under the Sea Friends',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Animals & Nature',
-    profiles: ['noah'],
-    emoji: '🐠',
-    color: '#00B4D8',
-    duration: '5 min',
-  },
-  {
-    id: 'lullaby',
-    title: 'Sleepy Time Lullabies',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Calm & Sleepy',
+    id: 'le-s02e13',
+    title: '13. A Brand New Outfit',
+    driveId: '1KAOAWa3WGup9bMKGdWB95XTzQP_5UmFz',
+    category: 'Little Einsteins',
     profiles: ['noah', 'naia'],
-    emoji: '😴',
-    color: '#6A4C93',
-    duration: '10 min',
+    emoji: '👗',
+    color: '#9B5DE5',
+    duration: '24 min',
   },
   {
-    id: 'rain-sounds',
-    title: 'Gentle Rain & Soft Music',
-    driveId: 'REPLACE_WITH_DRIVE_FILE_ID',
-    category: 'Calm & Sleepy',
+    id: 'le-s02e14',
+    title: '14. The Missing Invitation',
+    driveId: '13ZGEDh5zod9Q2EaZiXZ8trPYg2nmenr-',
+    category: 'Little Einsteins',
     profiles: ['noah', 'naia'],
-    emoji: '🌧️',
-    color: '#577590',
-    duration: '15 min',
+    emoji: '✉️',
+    color: '#F77F00',
+    duration: '24 min',
+  },
+
+  // === Movies (mp4) =======================================================
+  {
+    id: 'curious-george-2006',
+    title: 'Curious George',
+    driveId: '167f3Ou4ZbKwMVZtx8puJ66zNqDrPUXDi',
+    category: 'Movies',
+    profiles: ['noah', 'naia'],
+    emoji: '🐵',
+    color: '#FFD166',
+    duration: '1 h 28 m',
   },
 ]
+
+// ============================================================================
+//  NOT YET PLAYABLE — needs converting from .mkv to .mp4
+//  ---------------------------------------------------------------------------
+//  Google Drive's in-browser player can't play .mkv files, so these won't work
+//  in the app as-is. Once you convert any of them to .mp4 and upload, copy the
+//  new file ID into a `shows` entry above and it'll appear.
+//
+//  Mr. Rogers' Neighborhood  (folder: 1rAtG9Z5Hjuuu3QvweScGdvKw2LOPnrfW)
+//    ~30 episodes, all .mkv
+//  The Many Adventures of Winnie the Pooh (1977)
+//    1q_EqRnW1rj9FPmjyUlgWRKzAnICnKn4O   (.mkv, 4.7 GB)
+//  The Tiger Who Came To Tea (2019)
+//    1f1CfgRZpHdh15bvkEkIAFQ3CUAZdDbUT   (.mkv)
+//  The Snowy Day (2016)
+//    1Nvk-S4tjWCunVwPZVrWfE1Z4Xsri16xx   (.mkv)
+// ============================================================================
